@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -13,6 +15,14 @@ import { Input } from "@nextui-org/input";
 import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Avatar,
+  User,
+} from "@nextui-org/react";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -40,13 +50,64 @@ export const Navbar = () => {
     />
   );
 
+  const profileDropdownDesktop = (
+    <Dropdown placement="bottom-start">
+      <DropdownTrigger>
+        <User
+          as="button"
+          avatarProps={{
+            isBordered: true,
+            src: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+          }}
+          className="transition-transform"
+          description="@rejaulrussel"
+          name="Rejaul Russel"
+        />
+      </DropdownTrigger>
+      <DropdownMenu aria-label="User Actions" variant="flat">
+        <DropdownItem key="settings" color="secondary">
+          <Link href="/profile">Profile Settings</Link>
+        </DropdownItem>
+        <DropdownItem key="logout" color="danger">
+          Log Out
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  );
+
+  const profileDropdownMobile = (
+    <Dropdown placement="bottom-end">
+      <DropdownTrigger>
+        <Avatar
+          isBordered
+          as="button"
+          className="transition-transform"
+          src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+        />
+      </DropdownTrigger>
+      <DropdownMenu aria-label="Profile Actions" variant="flat">
+        <DropdownItem key="profile" className="h-14 gap-2">
+          <p className="font-semibold">Signed in as</p>
+          <p className="font-semibold">rejaulrussel@gmail.com</p>
+        </DropdownItem>
+
+        <DropdownItem key="settings" color="secondary">
+          <Link href="/profile">Profile Settings</Link>
+        </DropdownItem>
+        <DropdownItem key="logout" color="danger">
+          Log Out
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  );
+
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             <Logo />
-            <p className="font-bold text-inherit">TechInsights</p>
+            <p className="font-bold text-inherit">EngineersIQ</p>
           </NextLink>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
@@ -73,10 +134,12 @@ export const Navbar = () => {
       >
         <ThemeSwitch />
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+        {profileDropdownDesktop}
       </NavbarContent>
 
       {/* mobile */}
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
+        {profileDropdownMobile}
         <ThemeSwitch />
         <NavbarMenuToggle />
       </NavbarContent>
