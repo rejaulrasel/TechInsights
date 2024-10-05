@@ -7,11 +7,11 @@ import {
   Input,
   Link,
 } from "@nextui-org/react";
-export default function Login() {
+export default function Register() {
   return (
     <Card className="w-full max-w-2xl mx-auto mt-10 md:mt-16 lg:mt-20">
       <CardHeader className="flex flex-col gap-1 px-6 py-5">
-        <h1 className="text-2xl font-bold">Login to your Account</h1>
+        <h1 className="text-2xl font-bold">Login</h1>
         <p className="text-sm text-default-500">
           Enter your credentials to access your account
         </p>
