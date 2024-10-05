@@ -1,37 +1,33 @@
-import { NextResponse } from "next/server";
+import emailjs from "emailjs-com";
+import jwt from 'jsonwebtoken';
 
-import connectMongodb from "@/libs/connect_mongodb";
-import User from "@/models/users.model";
-import { IUser } from "@/interface/users.interface";
-
-import createJwtTokenForAccVerification from "@/utils/create_jwt_token_for_account_verification";
-
-export async function POST(request: Request) {
-    try {
-        await connectMongodb();
-        const data: IUser = await request.json();
-        const emailExist = await User.findOne({ email: data.email });
-        const usernameExist = await User.findOne({ username: data.username });
-
-        if (emailExist) {
-            return NextResponse.json({ message: 'Email Already Exist' }, { status: 500 })
-        } else if (usernameExist) {
-            return NextResponse.json({ message: 'Username Already Taken' }, { status: 500 });
-        };
-
-        // const encryptedPassword = await bcrypt.hash(data.password, Number(process.env.BCRYPT_SALT_ROUNDS))
-        const result = await User.create(data);
-
-        if (result) {
-            const tokenForVerification = await createJwtTokenForAccVerification({ email: data.email, name: data?.name });
+const SERVICE_ID = "service_6q2mlgc";
+const PUBLIC_KEY = "f8-NuZZSnWNj4M3eS";
+const TEMPLATE_ID = "template_woxpdzz";
 
 
-            return NextResponse.json({ message: 'User Created Successfully' }, { status: 200 })
-        }
+async function sendAccountVerificationEmail(payload: { email: string; name: string }) {
 
-    } catch (error) {
-        console.log(error);
 
-        return NextResponse.json({ message: 'failed to create user' }, { status: 500 })
-    }
+    const jwtToken = jwt.sign(payload,
+        process.env.JWT_SECRET_FOR_ACCOUNT_VERIFICATION as string,
+        { expiresIn: '1h' }
+    );
+
+
+    // try {
+    //     const res = await emailjs.send(
+    //         SERVICE_ID,
+    //         TEMPLATE_ID,
+    //         TEMPLATE_PARAMS,
+    //         PUBLIC_KEY
+    //     );
+    //     return res;
+    // } catch (error) {
+    //     console.log(error);
+    //     return null;
+    // }
 }
+
+
+export default sendAccountVerificationEmail;
