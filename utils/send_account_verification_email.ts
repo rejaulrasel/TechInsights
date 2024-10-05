@@ -1,8 +1,6 @@
 import emailjs from "emailjs-com";
 import jwt from 'jsonwebtoken';
-const SERVICE_ID = "techinsights";
-const PUBLIC_KEY = "qFd5qmb5ZtWsVpwuc";
-const TEMPLATE_ID = "template_0mdbb8k";
+
 
 async function sendAccountVerificationEmail(payload: { email: string; name: string }) {
 
@@ -11,7 +9,32 @@ async function sendAccountVerificationEmail(payload: { email: string; name: stri
         { expiresIn: '1h' }
     );
 
+    // try {
+    //     const res = await emailjs.send(
+    //         SERVICE_ID,
+    //         TEMPLATE_ID,
+    //         TEMPLATE_PARAMS,
+    //         PUBLIC_KEY
+    //     );
+    try {
+        const res = await emailjs.send(
+            process.env.EMAILJS_SERVICE_ID as string,
+            process.env.TEMPLATE_ID as string,
+            TEMPLATE_PARAMS,
+            process.env.EMAILJS_PUBLIC_KEY as string
+        );
 
+        //     return res;
+        // } catch (error) {
+        //     console.log(error);
+        return res;
+    } catch (error) {
+        console.log(error);
+
+        //     return null;
+        // }
+        return null;
+    }
 }
 
 export default sendAccountVerificationEmail;
