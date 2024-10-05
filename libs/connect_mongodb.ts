@@ -11,3 +11,5 @@ const connectMongodb = async () => {
         console.log("There was an error connecting to MangoDB", error);
     }
 };
+
+export default connectMongodb

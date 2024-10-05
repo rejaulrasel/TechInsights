@@ -1,5 +1,7 @@
 import { z } from 'zod';
-export const userSchema = z.object({
+
+
+export const userValidationSchema = z.object({
     name: z.string().min(1, { message: "Name is required" }).trim(),
     email: z.string().email({ message: "Invalid email address" }).trim().toLowerCase(),
     username: z.string()
@@ -10,4 +12,4 @@ export const userSchema = z.object({
     isEmailVerified: z.boolean().default(false),
     isPremiumMember: z.boolean().default(false),
     role: z.enum(['admin', 'user'], { message: "Role must be 'admin' or 'user'" }).default('user'),
-});
+})
