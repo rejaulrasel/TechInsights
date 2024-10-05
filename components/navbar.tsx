@@ -22,6 +22,7 @@ import {
   DropdownItem,
   Avatar,
   User,
+  Button,
 } from "@nextui-org/react";
 
 import { siteConfig } from "@/config/site";
@@ -107,7 +108,7 @@ export const Navbar = () => {
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             <Logo />
-            <p className="font-bold text-inherit">EngineersIQ</p>
+            <p className="font-bold text-inherit">TechInsights</p>
           </NextLink>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
@@ -135,6 +136,12 @@ export const Navbar = () => {
         <ThemeSwitch />
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
         {profileDropdownDesktop}
+        {/* {profileDropdownDesktop} */}
+        <Link className="text-default-foreground" href="/auth/login">
+          <Button color="default" variant="bordered">
+            Sign In
+          </Button>
+        </Link>
       </NavbarContent>
 
       {/* mobile */}
