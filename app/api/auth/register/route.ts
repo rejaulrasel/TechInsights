@@ -1,33 +1,37 @@
-import emailjs from "emailjs-com";
-import jwt from 'jsonwebtoken';
+import { NextResponse } from "next/server";
 
-const SERVICE_ID = "service_6q2mlgc";
-const PUBLIC_KEY = "f8-NuZZSnWNj4M3eS";
-const TEMPLATE_ID = "template_woxpdzz";
-
-
-async function sendAccountVerificationEmail(payload: { email: string; name: string }) {
+import connectMongodb from "@/libs/connect_mongodb";
+import User from "@/models/users.model";
+import { IUser } from "@/interface/users.interface";
+import { sendAccountVerificationEmail } from "@/utils/send_account_verification_email";
 
 
-    const jwtToken = jwt.sign(payload,
-        process.env.JWT_SECRET_FOR_ACCOUNT_VERIFICATION as string,
-        { expiresIn: '1h' }
-    );
+export async function POST(request: Request) {
+    try {
+        await connectMongodb();
+        const data: IUser = await request.json();
+        const emailExist = await User.findOne({ email: data.email });
+        const usernameExist = await User.findOne({ username: data.username });
 
+        if (emailExist) {
+            return NextResponse.json({ message: 'Email Already Exist' }, { status: 500 })
+        } else if (usernameExist) {
+            return NextResponse.json({ message: 'Username Already Taken' }, { status: 500 });
+        };
 
-    // try {
-    //     const res = await emailjs.send(
-    //         SERVICE_ID,
-    //         TEMPLATE_ID,
-    //         TEMPLATE_PARAMS,
-    //         PUBLIC_KEY
-    //     );
-    //     return res;
-    // } catch (error) {
-    //     console.log(error);
-    //     return null;
-    // }
-}
+        // const encryptedPassword = await bcrypt.hash(data.password, Number(process.env.BCRYPT_SALT_ROUNDS))
+        const result = await User.create(data);
 
+        if (result) {
+            const sendEmailVerificationLink = await sendAccountVerificationEmail({ email: data.email, name: data?.name });
 
-export default sendAccountVerificationEmail;
+            console.log('email res', sendEmailVerificationLink);
+
+            return NextResponse.json({ message: 'User Created Successfully' }, { status: 200 })
+        }
+
+    } catch (error) {
+        console.log(error);
+
+        return NextResponse.json({ message: 'failed to create user' }, { status: 500 })
+    }
