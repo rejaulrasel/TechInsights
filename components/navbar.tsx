@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   Navbar as NextUINavbar,
@@ -14,15 +14,7 @@ import { Input } from "@nextui-org/input";
 import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Avatar,
-  User,
-  Button,
-} from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, User, Button } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/spinner";
 
 import { siteConfig } from "@/config/site";
@@ -63,16 +55,11 @@ export const Navbar = () => {
           }}
           className="transition-transform"
           description={`@${currentUser?.username}`}
-          name={
-            <UserName
-              isPremium={currentUser?.isPremiumMember}
-              name={currentUser?.name}
-            />
-          }
+          name={<UserName isPremium={currentUser?.isPremiumMember} name={currentUser?.name} />}
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions" variant="flat">
-        <DropdownItem key="settings" color="secondary">
+        <DropdownItem key='settings' color="secondary" >
           <Link href="/profile">Profile Settings</Link>
         </DropdownItem>
         <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
@@ -88,22 +75,17 @@ export const Navbar = () => {
         <Avatar
           isBordered
           as="button"
-          size="sm"
           className="transition-transform"
+          size="sm"
           src={currentUser?.profileImg}
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="Profile Actions" variant="flat">
         <DropdownItem key="profile" className="h-14 gap-2">
-          <p className="font-semibold">
-            <UserName
-              isPremium={currentUser?.isPremiumMember}
-              name={currentUser?.name}
-            />
-          </p>
+          <p className="font-semibold"><UserName isPremium={currentUser?.isPremiumMember} name={currentUser?.name} /></p>
           <p className="font-semibold">{`@${currentUser?.username}`}</p>
         </DropdownItem>
-        <DropdownItem key="settings" color="secondary">
+        <DropdownItem key='settings' color="secondary" >
           <Link href="/profile">Profile Settings</Link>
         </DropdownItem>
         <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
@@ -111,7 +93,7 @@ export const Navbar = () => {
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
-  );
+  )
 
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
@@ -128,7 +110,7 @@ export const Navbar = () => {
               <NextLink
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium"
+                  "data-[active=true]:text-primary data-[active=true]:font-medium",
                 )}
                 color="foreground"
                 href={item.href}
@@ -145,17 +127,15 @@ export const Navbar = () => {
         justify="end"
       >
         <ThemeSwitch />
-        <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+        <NavbarItem className="hidden lg:flex">
+          {searchInput}
+        </NavbarItem>
 
-        {currentUser && (
-          <Link href="/new-story">
-            <WriteIcon />
-          </Link>
-        )}
+        {currentUser && <Link href="/new-story" >
+          <WriteIcon />
+        </Link>}
 
-        {isLoading ? (
-          <Spinner />
-        ) : currentUser ? (
+        {isLoading ? <Spinner /> : currentUser ? (
           profileDropdownDesktop
         ) : (
           <Link className="text-default-foreground" href="/auth/login">
@@ -164,15 +144,14 @@ export const Navbar = () => {
             </Button>
           </Link>
         )}
+
       </NavbarContent>
 
       {/* mobile */}
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        {currentUser && (
-          <Link href="/new-story">
-            <WriteIcon />
-          </Link>
-        )}
+        {currentUser && <Link href="/new-story" >
+          <WriteIcon />
+        </Link>}
         <ThemeSwitch />
         {isLoading ? <Spinner /> : currentUser ? profileDropdownMobile : null}
         <NavbarMenuToggle />
