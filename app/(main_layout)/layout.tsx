@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { fontSans } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
 import { Navbar } from "@/components/navbar";
+import Footer from "@/components/footer";
 
 import { Providers } from "../providers";
 
@@ -43,6 +44,7 @@ export default function RootLayout({
             <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
               {children}
             </main>
+            <Footer />
           </div>
         </Providers>
       </body>
