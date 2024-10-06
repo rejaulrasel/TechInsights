@@ -1,7 +1,7 @@
 import emailjs from "emailjs-com";
 import jwt from 'jsonwebtoken';
 
-async function sendAccountVerificationEmail(payload: { email: string; name: string }) {
+export async function sendAccountVerificationEmail(payload: { email: string; name: string }) {
 
     const jwtToken = jwt.sign(payload,
         process.env.JWT_SECRET_FOR_ACCOUNT_VERIFICATION as string,
