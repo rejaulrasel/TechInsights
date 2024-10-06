@@ -33,11 +33,14 @@ export async function GET(request: Request) {
     const currentTime = new Date();
     const expiry = new Date(spited[1]);
 
-    // if (currentTime > expiry) {
-    //     return NextResponse.json({
-    //         message: 'something wrong'
-    //     }, { status: 400 });
-    // }
+    if (currentTime > expiry) {
+      return NextResponse.json(
+        {
+          message: "something wrong",
+        },
+        { status: 400 }
+      );
+    }
 
     const updateUser = await User.findOneAndUpdate(
       { email: spited[0] },
