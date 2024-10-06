@@ -56,7 +56,7 @@ const NextStep = () => {
               className="w-full"
               color="secondary"
               variant="flat"
-              onClick={() => router.push("/profile")}
+              onClick={() => router.push("/auth/login")}
             >
               {isSucceed ? "Go Profile" : "Skip for Now"}
             </Button>
