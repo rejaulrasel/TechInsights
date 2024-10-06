@@ -4,7 +4,7 @@ import { Button, Card } from "@nextui-org/react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
-import { sendAccountVerificationEmail } from "@/utils/send_account_verification_email";
+import sendAccountVerificationEmail from "@/utils/send_account_verification_email";
 const NextStep = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
@@ -12,8 +12,6 @@ const NextStep = () => {
   const handleResendEmail = async () => {
     if (email) {
       const emailRes = await sendAccountVerificationEmail({ email });
-
-      console.log(emailRes);
     } else {
       toast.error("Something Went Wrong!");
     }
