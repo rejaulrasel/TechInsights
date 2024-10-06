@@ -27,7 +27,6 @@ export default function Register() {
   const handleRegister = (data: formData) => {
     console.log(data);
   };
-  console.log(errors);
 
   return (
     <div className=" min-h-screen flex justify-center items-center fixed inset-0 px-5">
@@ -51,6 +50,8 @@ export default function Register() {
                 size="sm"
                 type="text"
                 {...register("name")}
+                errorMessage={errors.name?.message as string}
+                isInvalid={!!errors.name}
               />
               <Input
                 required
@@ -60,14 +61,18 @@ export default function Register() {
                 size="sm"
                 type="text"
                 {...register("username")}
+                errorMessage={errors.username?.message as string}
+                isInvalid={!!errors.username}
               />
             </div>
             <Input
               required
               label="Email"
               size="sm"
-              type="email"
+              type="text"
               {...register("email")}
+              errorMessage={errors.email?.message as string}
+              isInvalid={!!errors.email}
             />
             <Input
               required
@@ -75,6 +80,8 @@ export default function Register() {
               size="sm"
               type="password"
               {...register("password")}
+              errorMessage={errors.password?.message as string}
+              isInvalid={!!errors.password}
             />
             <Input
               required
@@ -82,6 +89,8 @@ export default function Register() {
               size="sm"
               type="password"
               {...register("password2")}
+              errorMessage={errors.password2?.message as string}
+              isInvalid={!!errors.password2}
             />
             <Button className="w-full rounded-lg py-6" type="submit">
               Register
