@@ -13,19 +13,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { userRegistrationValidationSchema } from "@/validations/users.validations";
-
+import Loading from "@/components/loading";
 import { useUserRegistration } from "@/hooks/operations/hook.operation.create_user";
 
-import Loading from "@/components/loading";
-
 export default function Register() {
-  const {
-    mutate: handleCreateNewUser,
-    isError,
-    isPending,
-  } = useUserRegistration();
-
-  console.log({ isError, isPending });
+  const { mutate: handleCreateNewUser, isPending } = useUserRegistration();
 
   const {
     register,
@@ -39,6 +31,7 @@ export default function Register() {
   const handleRegister = (data: formData) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password2, ...rest } = data;
+
     handleCreateNewUser(rest);
   };
 
