@@ -64,7 +64,7 @@ export const Navbar = () => {
           description={`@${currentUser?.username}`}
           name={
             <UserName
-              isPremium={!currentUser?.isPremiumMember}
+              isPremium={currentUser?.isPremiumMember}
               name={currentUser?.name}
             />
           }
@@ -93,8 +93,13 @@ export const Navbar = () => {
       </DropdownTrigger>
       <DropdownMenu aria-label="Profile Actions" variant="flat">
         <DropdownItem key="profile" className="h-14 gap-2">
-          <p className="font-semibold">Signed in as</p>
-          <p className="font-semibold">{currentUser?.email}</p>
+          <p className="font-semibold">
+            <UserName
+              isPremium={currentUser?.isPremiumMember}
+              name={currentUser?.name}
+            />
+          </p>
+          <p className="font-semibold">{`@${currentUser?.username}`}</p>
         </DropdownItem>
         <DropdownItem key="settings" color="secondary">
           <Link href="/profile">Profile Settings</Link>

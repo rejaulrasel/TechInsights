@@ -5,7 +5,6 @@ import clsx from "clsx";
 import { fontSans } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
 import { Navbar } from "@/components/navbar";
-import AuthProvider from "@/providers/auth_provider";
 
 import { Providers } from "../providers";
 
@@ -38,16 +37,14 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <AuthProvider>
-          <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-            <div className="relative flex flex-col h-screen">
-              <Navbar />
-              <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-                {children}
-              </main>
-            </div>
-          </Providers>
-        </AuthProvider>
+        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+          <div className="relative flex flex-col h-screen">
+            <Navbar />
+            <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+              {children}
+            </main>
+          </div>
+        </Providers>
       </body>
     </html>
   );
