@@ -12,7 +12,6 @@ export async function POST(request: Request) {
         await connectMongodb();
         const isEmailExist = await User.findOne({ email }).select('+password');
 
-
         if (!isEmailExist) {
             return NextResponse.json({
                 success: false,
@@ -40,7 +39,7 @@ export async function POST(request: Request) {
             email: isEmailExist.email,
             username: isEmailExist.username,
             role: isEmailExist.role
-        }, process.env.JWT_ACCESS_TOKEN_SECRET as string, {
+        }, process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET as string, {
             expiresIn: '1d'
         });
 
@@ -48,7 +47,7 @@ export async function POST(request: Request) {
             email: isEmailExist.email,
             username: isEmailExist.username,
             role: isEmailExist.role
-        }, process.env.JWT_REFRESH_TOKEN_SECRET as string, {
+        }, process.env.NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET as string, {
             expiresIn: '30d'
         });
 
@@ -65,4 +64,4 @@ export async function POST(request: Request) {
             message: 'Something went wrong'
         }, { status: 500 });
     }
-}   
+}
