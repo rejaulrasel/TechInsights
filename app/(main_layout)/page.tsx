@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Button, Card, CardBody, Avatar, Chip } from "@nextui-org/react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 import { ArticlePreview } from "@/components/article_preview";
 import { SidebarSection } from "@/components/home/sidebar_section";
@@ -165,14 +166,17 @@ export default function Home() {
                 </div>
               </SidebarSection>
               {currentUser && (
-                <SidebarSection title="New to the world">
+                <SidebarSection title="Who to follow">
                   <div className="space-y-4">
                     {whoToFollow?.map((user: IWhoToFollowResponse, indx) => (
                       <div
                         key={indx}
                         className="flex items-center justify-between"
                       >
-                        <div className="flex items-center">
+                        <Link
+                          className="flex items-center"
+                          href={`/profile/${user.username}`}
+                        >
                           <Avatar
                             className="mr-2"
                             size="sm"
@@ -187,7 +191,7 @@ export default function Home() {
                               @{user.username}
                             </p>
                           </div>
-                        </div>
+                        </Link>
 
                         <Button
                           isLoading={loading === indx}
