@@ -32,6 +32,8 @@ import useUser from "@/hooks/useUser";
 export const Navbar = () => {
   const { data, error, isLoading } = useUser();
 
+  console.log(data);
+
   const searchInput = (
     <Input
       aria-label="Search"
