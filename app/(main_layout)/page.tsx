@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Button, Card, CardBody, Avatar, Chip } from "@nextui-org/react";
+import { toast } from "sonner";
 
 import { ArticlePreview } from "@/components/article_preview";
 import { SidebarSection } from "@/components/home/sidebar_section";
@@ -9,11 +10,13 @@ import useUser from "@/hooks/useUser";
 import useWhoToFollow from "@/hooks/use_who_to_follow";
 import { IWhoToFollowResponse } from "@/interface/who_to_follow.response.interface";
 import UserName from "@/components/premium_acc_badge";
+import axiosInstance from "@/libs/axiosInstance";
 
 export default function Home() {
   const { currentUser } = useUser();
-  const { whoToFollow } = useWhoToFollow(currentUser?._id as string);
-
+  const { whoToFollow, revalidate } = useWhoToFollow(
+    currentUser?._id as string
+  );
   const topics = [
     "Economics",
     "DevOps",
@@ -23,6 +26,20 @@ export default function Home() {
     "Feminism",
     "Data Visualization",
   ];
+
+  async function handleFollowNewPerson(id: string) {
+    const payload = {
+      follower: currentUser?._id,
+      following: id,
+    };
+
+    const serverRes = await axiosInstance.patch("/follow", payload);
+
+    if (serverRes.status === 200) {
+      revalidate();
+      toast.success("Following");
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -44,7 +61,7 @@ export default function Home() {
                 name: "Alex Mathers",
                 avatar: "/placeholder.svg?height=40&width=40",
               }}
-              date="2d ago"
+              date="3d ago"
               image="https://plus.unsplash.com/premium_photo-1685086785054-d047cdc0e525?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               readTime={5}
               snippet="What even is 'focus'? It's a term we throw around a lot, but do we really understand what it means to be focused? In this article, we'll explore the concept of focus and how to achieve it in your daily life."
@@ -121,7 +138,11 @@ export default function Home() {
                           </div>
                         </div>
 
-                        <Button size="sm" variant="flat">
+                        <Button
+                          size="sm"
+                          variant="flat"
+                          onClick={() => handleFollowNewPerson(user?._id)}
+                        >
                           Follow
                         </Button>
                       </div>
