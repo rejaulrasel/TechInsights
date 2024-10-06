@@ -28,8 +28,10 @@ import {
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon, Logo } from "@/components/icons";
+import useUser from "@/hooks/useUser";
 
 export const Navbar = () => {
+  const { data, error, isLoading } = useUser();
   const searchInput = (
     <Input
       aria-label="Search"
@@ -61,8 +63,8 @@ export const Navbar = () => {
             src: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
           }}
           className="transition-transform"
-          description="@rejaulrussel"
-          name="Rejaul Russel"
+          description="@tonyreichert"
+          name="Tony Reichert"
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions" variant="flat">
@@ -89,9 +91,8 @@ export const Navbar = () => {
       <DropdownMenu aria-label="Profile Actions" variant="flat">
         <DropdownItem key="profile" className="h-14 gap-2">
           <p className="font-semibold">Signed in as</p>
-          <p className="font-semibold">rejaulrussel@gmail.com</p>
+          <p className="font-semibold">zoey@example.com</p>
         </DropdownItem>
-
         <DropdownItem key="settings" color="secondary">
           <Link href="/profile">Profile Settings</Link>
         </DropdownItem>
@@ -108,7 +109,7 @@ export const Navbar = () => {
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             <Logo />
-            <p className="font-bold text-inherit">TechInsights</p>
+            <p className="font-bold text-inherit">EngineersIQ</p>
           </NextLink>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
@@ -136,7 +137,7 @@ export const Navbar = () => {
         <ThemeSwitch />
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
         {profileDropdownDesktop}
-        {/* {profileDropdownDesktop} */}
+
         <Link className="text-default-foreground" href="/auth/login">
           <Button color="default" variant="bordered">
             Sign In
