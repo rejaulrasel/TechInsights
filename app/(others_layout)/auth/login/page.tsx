@@ -11,10 +11,14 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 import { loginValidationSchema } from "@/validations/login.validation";
 
 export default function Login() {
+  const [customError, setCustomError] = useState<null | string>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const {
     handleSubmit,
     register,
@@ -24,6 +28,9 @@ export default function Login() {
   });
 
   const handleLogin: SubmitHandler<FieldValues> = async (data) => {
+    setCustomError(null);
+    setLoading(true);
+
     const result = await signIn("credentials", {
       redirect: false,
       email: data.email,
@@ -31,9 +38,12 @@ export default function Login() {
     });
 
     if (result?.error) {
-      console.error("Login error: ", result.error);
-      // Show error message to the user
+      setCustomError("Invalid Email or Password!");
+      setLoading(false);
     } else if (result?.ok) {
+      setCustomError(null);
+      setLoading(false);
+
       alert("login ok");
       // Redirect to a protected page (or home)
       // router.push('/dashboard'); // Change this to your protected page
@@ -73,12 +83,19 @@ export default function Login() {
               Sign In
             </Button>
           </form>
+          <span className="text-red-600 mt-2 text-sm">{customError}</span>
           <div className="flex justify-center mt-6">
-            <div className="">
-              Don&apos;t have account ?{" "}
-              <Link className="" href="/auth/register">
-                Register Now
-              </Link>
+            <div className="text-center">
+              {customError ? (
+                <p className="text-sm">Forgot Password?</p>
+              ) : (
+                <p>
+                  Don&apos;t have account ?{" "}
+                  <Link className="" href="/auth/register">
+                    Register Now
+                  </Link>
+                </p>
+              )}
             </div>
           </div>
         </CardBody>
