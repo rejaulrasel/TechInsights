@@ -27,7 +27,9 @@ export async function POST(request: Request) {
         }
 
         // Create the new user
+        console.log('just before CREATION')
         const result = await User.create(data);
+        console.log('just AFTER CREATION')
 
         return NextResponse.json({ message: 'User Created Successfully', data: result }, { status: 201 });
 
