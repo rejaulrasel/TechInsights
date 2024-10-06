@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 import { IUser } from '@/interface/users.interface';
+
 const userSchema = new Schema<IUser>({
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
@@ -9,7 +10,7 @@ const userSchema = new Schema<IUser>({
     password: { type: String, required: true },
     isEmailVerified: { type: Boolean, required: true, default: false },
     isPremiumMember: { type: Boolean, required: true, default: false },
-
+    isBlocked: { type: Boolean, required: true, default: false },
     role: { type: String, enum: ['admin', 'user'], required: true, default: 'user' },
     followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],  // Array of User IDs for followers
     following: [{ type: Schema.Types.ObjectId, ref: 'User' }],  // Array of User IDs for following
@@ -18,18 +19,17 @@ const userSchema = new Schema<IUser>({
 });
 
 // Hash the password before saving the user
-
 userSchema.pre('save', async function (next) {
     if (this.isModified('password')) {
         this.password = await bcrypt.hash(this.password, Number(process.env.BCRYPT_SALT_ROUNDS));
     }
     next();
 });
+
 // Method to populate followers and following fields when getting user data
 userSchema.methods.populateFollowersAndFollowing = async function () {
     return await this.populate('followers following').execPopulate();
 };
-
 
 const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
 
