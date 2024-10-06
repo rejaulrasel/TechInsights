@@ -1,9 +1,12 @@
 "use client";
+
 import React from "react";
 import { Avatar, Button, Link, User } from "@nextui-org/react";
 import { MoreHorizontal } from "lucide-react";
+
 import { ArticlePreview } from "@/components/article_preview";
 import UserName from "@/components/premium_acc_badge";
+
 export default function Component() {
   return (
     <div className="container mx-auto max-w-7xl">
@@ -20,6 +23,7 @@ export default function Component() {
           <Button className="mt-4" color="primary" size="sm" variant="flat">
             Edit profile
           </Button>
+
           {/* Following List */}
           <div className="mt-8">
             <h3 className="text-xl font-semibold mb-4">Following</h3>
@@ -52,6 +56,7 @@ export default function Component() {
             </Link>
           </div>
         </div>
+
         {/* Right Column: Content for mobile, Left for large screens */}
         <div className="lg:order-1 lg:col-span-2 order-2">
           <div className="flex flex-col items-start mb-8">
