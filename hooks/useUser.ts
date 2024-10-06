@@ -1,9 +1,8 @@
 "use client";
 import axios, { AxiosError } from "axios";
-import { useSession } from "next-auth/react";
 import useSWR from "swr";
 
-// import { IUserResponse } from "@/interface/user.response.interface";
+import { IUserResponse } from "@/interface/user.response.interface";
 
 interface UseUserResponse {
     data: IUserResponse[]; // Assuming you're expecting an array of users
@@ -12,9 +11,7 @@ interface UseUserResponse {
 }
 
 const useUser = (): UseUserResponse => {
-    const { data: session } = useSession();
-    const email = session?.user?.email;
-
+    const email = 'rejaulhasanrasel28@gmail.com'
     const fetcher = async (url: string): Promise<IUserResponse[]> => {
         const response = await axios.get(url);
         return response.data;

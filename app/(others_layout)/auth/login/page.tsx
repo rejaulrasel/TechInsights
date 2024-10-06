@@ -31,6 +31,7 @@ export default function Login() {
   });
 
   const handleLogin: SubmitHandler<FieldValues> = async (data) => {
+    localStorage.removeItem("signed_email");
     setCustomError(null);
     setLoading(true);
 
@@ -44,6 +45,7 @@ export default function Login() {
       setCustomError("Invalid Email or Password!");
       setLoading(false);
     } else if (result?.ok) {
+      localStorage.setItem("signed_email", data.email);
       setCustomError(null);
       setLoading(false);
 
@@ -56,7 +58,7 @@ export default function Login() {
     <>
       {loading && <Loading />}
       <div className="min-h-screen flex justify-center items-center fixed inset-0 px-5">
-        <Card className="w-full max-w-2xl mx-auto">
+        <Card className="w-full max-w-xl mx-auto">
           <CardHeader className="flex flex-col gap-1 px-6 py-5">
             <h1 className="text-2xl font-bold">Login</h1>
             <p className="text-sm text-default-500">
