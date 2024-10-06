@@ -8,13 +8,36 @@ import {
   Input,
   Link,
 } from "@nextui-org/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
+
+import { loginValidationSchema } from "@/validations/login.validation";
 
 export default function Login() {
-  const { handleSubmit, register } = useForm();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(loginValidationSchema), // Using Zod for form validation
+  });
 
   const handleLogin: SubmitHandler<FieldValues> = async (data) => {
-    console.log(data);
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+    });
+
+    if (result?.error) {
+      console.error("Login error: ", result.error);
+      // Show error message to the user
+    } else if (result?.ok) {
+      alert("login ok");
+      // Redirect to a protected page (or home)
+      // router.push('/dashboard'); // Change this to your protected page
+    }
   };
 
   return (
@@ -32,8 +55,10 @@ export default function Login() {
               required
               label="Email"
               size="sm"
-              type="email"
+              type="string"
               {...register("email")}
+              errorMessage={errors.email?.message as string} // Display the error message
+              isInvalid={!!errors.email} // Show invalid state if there's an error
             />
             <Input
               required
@@ -41,16 +66,14 @@ export default function Login() {
               size="sm"
               type="password"
               {...register("password")}
+              errorMessage={errors.password?.message as string} // Display the error message
+              isInvalid={!!errors.password} // Show invalid state if there's an error
             />
             <Button className="w-full rounded-lg py-6" type="submit">
               Sign In
             </Button>
           </form>
           <div className="flex justify-center mt-6">
-            {/* <Link className='text-default-foreground' href="#" size="sm">
-                        Forgot password?
-                    </Link> */}
-
             <div className="">
               Don&apos;t have account ?{" "}
               <Link className="" href="/auth/register">

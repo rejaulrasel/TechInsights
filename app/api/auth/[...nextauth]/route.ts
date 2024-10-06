@@ -1,6 +1,7 @@
 import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextApiHandler } from "next";
+
 export const authOptions: AuthOptions = {
     providers: [
         CredentialsProvider({
@@ -11,8 +12,9 @@ export const authOptions: AuthOptions = {
             },
             async authorize(credentials) {
                 if (!credentials) return null;
+
                 try {
-                    const res = await fetch(`/auth/login`, {
+                    const res = await fetch(`http://localhost:3000/api/auth/login`, {
                         method: 'POST',
                         body: JSON.stringify({
                             email: credentials?.email,
@@ -20,6 +22,7 @@ export const authOptions: AuthOptions = {
                         }),
                         headers: { "Content-Type": "application/json" }
                     });
+
                     const user = await res.json();
 
                     if (res.ok && user) {
@@ -30,7 +33,6 @@ export const authOptions: AuthOptions = {
 
                     return null;
                 } catch (error) {
-
                     console.error("Error during authorization:", error);
 
                     return null;
@@ -46,6 +48,7 @@ export const authOptions: AuthOptions = {
         signIn: "/", // Redirect to your custom login page
     },
 };
+
 const handler: NextApiHandler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
