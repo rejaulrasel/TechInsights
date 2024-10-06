@@ -5,7 +5,7 @@ export async function getWhoToFollow(user: string) {
             tags: ["WHO_TO_fOLLOW"],
         },
     };
-    const res = await fetch(`/api/follow?user=${user}`, fetchOption);
+    const res = await fetch(`http://localhost:3000/api/follow?user=${user}`, fetchOption);
     console.log(res.json());
     return res.json();
 }
