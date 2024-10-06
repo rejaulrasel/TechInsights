@@ -8,6 +8,6 @@ export const registerUser = async (userData: FieldValues) => {
         const { data } = await axiosInstance.post('/auth/register', userData);
         return data;
     } catch (error: any) {
-        throw new Error(error)
+        throw new Error(error);
     }
 } 
