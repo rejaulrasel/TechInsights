@@ -18,20 +18,18 @@ import Loading from "@/components/loading";
 
 export default function Register() {
   const {
-    mutate: handleCreateNewUser,
-    isError,
-    isPending,
-  } = useUserRegistration();
-
-  console.log({ isError, isPending });
-
-  const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm({
     resolver: zodResolver(userRegistrationValidationSchema),
   });
+
+  const watchedEmail = watch("email");
+
+  const { mutate: handleCreateNewUser, isPending } =
+    useUserRegistration(watchedEmail);
 
   type formData = z.infer<typeof userRegistrationValidationSchema>;
   const handleRegister = (data: formData) => {
