@@ -1,7 +1,7 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
-import { Avatar, Button, Link, User } from "@nextui-org/react";
+import React, { useEffect, useState } from "react";
+import { Avatar, Button, Link } from "@nextui-org/react";
 import { MoreHorizontal } from "lucide-react";
 
 import { ArticlePreview } from "@/components/article_preview";
@@ -91,12 +91,12 @@ export default function Profile({ params }: { params: { user: string } }) {
                 </div>
                 {profile?.following && profile?.following?.length > 5 && (
                   <button
+                    className="text-sky-600"
                     onClick={() =>
                       setFlowFlngDisplay(
                         flowFlngDisplay > 5 ? 5 : profile.following.length
                       )
                     }
-                    className="text-sky-600"
                   >
                     {flowFlngDisplay > 5
                       ? "See less"
@@ -110,7 +110,7 @@ export default function Profile({ params }: { params: { user: string } }) {
                 <div className="">
                   <h3 className="text-xl font-semibold mb-4">Followers</h3>
                   {profile?.followers
-                    ?.slice(0, 5)
+                    ?.slice(0, flowFlngDisplay)
                     ?.reverse()
                     ?.map((follower: IfollowersAndFollowing, indx) => (
                       <div
@@ -129,20 +129,23 @@ export default function Profile({ params }: { params: { user: string } }) {
                             </p>
                           </div>
                         </div>
-
-                        <Button
-                          isIconOnly
-                          aria-label="More options"
-                          variant="light"
-                        >
-                          <MoreHorizontal size={16} />
-                        </Button>
                       </div>
                     ))}
                 </div>
-                <Link color="primary" href="#">
-                  See all (5)
-                </Link>
+                {profile?.followers && profile?.followers?.length > 5 && (
+                  <button
+                    className="text-sky-600"
+                    onClick={() =>
+                      setFlowFlngDisplay(
+                        flowFlngDisplay > 5 ? 5 : profile.followers.length
+                      )
+                    }
+                  >
+                    {flowFlngDisplay > 5
+                      ? "See less"
+                      : `See all (${profile.followers.length + 1})`}
+                  </button>
+                )}
               </div>
             )}
           </div>
