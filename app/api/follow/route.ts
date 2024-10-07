@@ -48,6 +48,8 @@ export async function GET(request: Request) {
     }
 };
 
+
+//follow    
 export async function PATCH(request: Request) {
     const { follower, following } = await request.json();
 
@@ -104,6 +106,8 @@ export async function PATCH(request: Request) {
     }
 };
 
+
+//unfollow
 export async function DELETE(request: Request) {
     const { follower, following } = await request.json();
 
