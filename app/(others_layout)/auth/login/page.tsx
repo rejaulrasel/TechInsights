@@ -65,7 +65,7 @@ export default function Login() {
       <div className="min-h-screen flex justify-center items-center fixed inset-0 px-5">
         <Card className="w-full max-w-xl mx-auto">
           <CardHeader className="flex flex-col gap-1 px-6 py-5">
-            <h1 className="text-2xl font-bold">Login</h1>
+            <h1 className="text-2xl font-bold">Please Login to your Acoount</h1>
             <p className="text-sm text-default-500">
               Enter your credentials to access your account
             </p>
