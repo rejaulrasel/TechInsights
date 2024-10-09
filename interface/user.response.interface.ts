@@ -10,6 +10,7 @@ export interface IfollowersAndFollowing {
 }
 
 export interface IUserResponse extends Document {
+    status: string;
     _id: string;
     name: string;
     email: string;
@@ -22,6 +23,7 @@ export interface IUserResponse extends Document {
     isBlocked: boolean;
     followers: IfollowersAndFollowing[];
     following: IfollowersAndFollowing[];
+    lastLogin?: Date;
     createdAt?: Date;
     updatedAt?: Date;
 }

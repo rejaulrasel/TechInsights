@@ -1,35 +1,34 @@
-
 import axios, { AxiosError } from "axios";
 import useSWR from "swr";
 
-import { IUserResponse } from "@/interface/user.response.interface";
+import { IAnalyticsResponse } from "@/interface/analytics.response.interface";
 
 interface UseUserResponse {
-    profile: IUserResponse | null;
+    data: IAnalyticsResponse | null;
     error: AxiosError | null;
     isLoading: boolean;
     revalidate: () => void;
 }
 
-const useProfile = (user: string): UseUserResponse => {
-    const fetcher = async (url: string): Promise<IUserResponse> => {
+const useAnalytics = (author: string): UseUserResponse => {
+    const fetcher = async (url: string): Promise<IAnalyticsResponse> => {
         const response = await axios.get(url);
         return response.data.data;
     };
 
-    const { data, error, isValidating, mutate } = useSWR<IUserResponse>(
-        user ? `/api/users?username=${user}` : null,
+    const { data, error, isValidating, mutate } = useSWR<IAnalyticsResponse>(
+        author ? `/api/analytics?_id=${author}` : null,
         fetcher
     );
 
     const isLoading = isValidating;
 
     return {
-        profile: data || null,
+        data: data || null,
         error: error as AxiosError,
         isLoading,
         revalidate: () => mutate(),
     };
 };
 
-export default useProfile;
+export default useAnalytics;
