@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-    name: "Engineers IQ",
-    description: "Make beautiful websites regardless of your design experience.",
+    name: "TechInsights",
+    description: "Create stunning websites effortlessly, no matter your design expertise.",
     navItems: [
         {
             label: "Home",
