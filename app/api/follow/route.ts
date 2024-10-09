@@ -48,8 +48,7 @@ export async function GET(request: Request) {
     }
 };
 
-
-//follow    
+// follow
 export async function PATCH(request: Request) {
     const { follower, following } = await request.json();
 
@@ -106,9 +105,7 @@ export async function PATCH(request: Request) {
     }
 };
 
-
-//unfollow
-
+// unfollow
 export async function PUT(request: Request) {
     const { follower, following } = await request.json();
 
