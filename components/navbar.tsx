@@ -10,7 +10,7 @@ import {
   NavbarMenuItem,
 } from "@nextui-org/navbar";
 import { Link } from "@nextui-org/link";
-import { Input } from "@nextui-org/input";
+// import { Input } from "@nextui-org/input";
 import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
@@ -27,7 +27,7 @@ import { Spinner } from "@nextui-org/spinner";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { SearchIcon, Logo, WriteIcon } from "@/components/icons";
+import { Logo, WriteIcon } from "@/components/icons";
 import useUser from "@/hooks/useUser";
 import signOut from "@/utils/sign_out_user";
 
@@ -36,21 +36,21 @@ import UserName from "./premium_acc_badge";
 export const Navbar = () => {
   const { currentUser, isLoading } = useUser();
 
-  const searchInput = (
-    <Input
-      aria-label="Search"
-      classNames={{
-        inputWrapper: "bg-default-100",
-        input: "text-sm",
-      }}
-      labelPlacement="outside"
-      placeholder="Search..."
-      startContent={
-        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-      }
-      type="search"
-    />
-  );
+  // const searchInput = (
+  //   <Input
+  //     aria-label="Search"
+  //     classNames={{
+  //       inputWrapper: "bg-default-100",
+  //       input: "text-sm",
+  //     }}
+  //     labelPlacement="outside"
+  //     placeholder="Search..."
+  //     startContent={
+  //       <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+  //     }
+  //     type="search"
+  //   />
+  // );
 
   const profileDropdownDesktop = (
     <Dropdown placement="bottom-start">
@@ -73,7 +73,9 @@ export const Navbar = () => {
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions" variant="flat">
         <DropdownItem key="settings" color="secondary">
-          <Link href="/profile">Profile Settings</Link>
+          <Link href={`/profile/${currentUser?.username}`}>
+            Profile & Analytics
+          </Link>
         </DropdownItem>
         <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
           Log Out
@@ -104,7 +106,9 @@ export const Navbar = () => {
           <p className="font-semibold">{`@${currentUser?.username}`}</p>
         </DropdownItem>
         <DropdownItem key="settings" color="secondary">
-          <Link href="/profile">Profile Settings</Link>
+          <Link href={`/profile/${currentUser?.username}`}>
+            Profile & Analytics
+          </Link>
         </DropdownItem>
         <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
           Log Out
@@ -145,16 +149,18 @@ export const Navbar = () => {
         justify="end"
       >
         <ThemeSwitch />
-        <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+        <NavbarItem className="hidden lg:flex">
+          {/* {searchInput} */}
+        </NavbarItem>
 
         {currentUser && (
-          <Link href="/new-story">
+          <Link href="/new">
             <WriteIcon />
           </Link>
         )}
 
         {isLoading ? (
-          <Spinner />
+          <Spinner size="sm" />
         ) : currentUser ? (
           profileDropdownDesktop
         ) : (
@@ -169,17 +175,21 @@ export const Navbar = () => {
       {/* mobile */}
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
         {currentUser && (
-          <Link href="/new-story">
+          <Link href="/new">
             <WriteIcon />
           </Link>
         )}
         <ThemeSwitch />
-        {isLoading ? <Spinner /> : currentUser ? profileDropdownMobile : null}
+        {isLoading ? (
+          <Spinner size="sm" />
+        ) : currentUser ? (
+          profileDropdownMobile
+        ) : null}
         <NavbarMenuToggle />
       </NavbarContent>
 
       <NavbarMenu>
-        {searchInput}
+        {/* {searchInput} */}
         <div className="mx-4 mt-2 flex flex-col gap-2">
           {siteConfig.navItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
@@ -188,6 +198,13 @@ export const Navbar = () => {
               </Link>
             </NavbarMenuItem>
           ))}
+          {!currentUser && (
+            <NavbarMenuItem>
+              <Link color="primary" href="/auth/login" size="lg">
+                Sign In
+              </Link>
+            </NavbarMenuItem>
+          )}
         </div>
       </NavbarMenu>
     </NextUINavbar>

@@ -1,5 +1,6 @@
 "use client";
 import { VerifiedBadge } from "./icons";
+
 const UserName = ({
   name,
   isPremium,
@@ -14,4 +15,5 @@ const UserName = ({
     </div>
   );
 };
+
 export default UserName;
