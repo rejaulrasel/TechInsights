@@ -1,13 +1,22 @@
 import mongoose from "mongoose";
 
+let isConnected = false;
+
 const connectMongodb = async () => {
+    if (isConnected) {
+        console.log("Already connected to MongoDB.");
+        return;
+    }
+
     try {
-        // await mongoose.connect(process.env.MONGODB_URL);
-        await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_CONNECTION_STRING as string);
+        await mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string);
+        isConnected = true;
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
     } catch (error) {
-        console.log("There was an error connecting to MangoDB", error);
+        console.log("There was an error connecting to MongoDB", error);
+        isConnected = false;
     }
 };
 
-export default connectMongodb
+export default connectMongodb;
