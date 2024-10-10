@@ -68,6 +68,7 @@ function Login() {
         router.push("/");
       }
     } catch (error) {
+      console.log("from line 71:", error);
       setCustomError("Something Bad Happened!");
       setLoading(false);
     }

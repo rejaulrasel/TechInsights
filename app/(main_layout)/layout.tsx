@@ -12,7 +12,7 @@ import { Providers } from "../providers";
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
+    template: `%s - Articles for Engineers`,
   },
   description: siteConfig.description,
 };
@@ -34,15 +34,15 @@ export default function RootLayout({
       <head />
       <body
         className={clsx(
-          "min-h-screen bg-background font-sans antialiased",
+          " bg-background font-sans antialiased",
           fontSans.variable
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className="relative flex flex-col h-screen">
+          <div className="">
             <Navbar />
-            <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow z-[1000]">
-              {children}
+            <main className="container mx-auto max-w-7xl pt-16 px-6">
+              <div className="">{children}</div>
             </main>
             <Footer />
           </div>

@@ -166,7 +166,7 @@ export const Navbar = () => {
         ) : (
           <Link className="text-default-foreground" href="/auth/login">
             <Button color="default" variant="bordered">
-              Sign In
+              Sign In pops
             </Button>
           </Link>
         )}

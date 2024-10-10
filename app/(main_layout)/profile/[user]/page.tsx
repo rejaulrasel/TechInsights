@@ -1,12 +1,33 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Avatar, Button, Link } from "@nextui-org/react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import {
+  Avatar,
+  Button,
+  Chip,
+  Input,
+  Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Spinner,
+  Tooltip,
+  useDisclosure,
+} from "@nextui-org/react";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+// import { useRouter } from 'next/navigation';
 import { FaPen } from "react-icons/fa6";
 import { IoMdSave } from "react-icons/io";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { CiCamera } from "react-icons/ci";
 
 import { ArticlePreview } from "@/components/article_preview";
 import UserName from "@/components/premium_acc_badge";
@@ -20,11 +41,24 @@ import {
 import axiosInstance from "@/libs/axiosInstance";
 import { INotificationEmail } from "@/interface/email.notification.interface";
 import sendNotificationEmail from "@/utils/send_notification_email";
+import { userPasswordChangeValidationSchema } from "@/validations/user.password_change.validation";
+import { encrypt } from "@/utils/text_encryptor";
+import uploadImageToImgBb from "@/utils/upload_image_to_imgbb";
+import sendAccountVerificationEmail from "@/utils/send_account_verification_email";
+import useArticle from "@/hooks/use_articles";
+import Pagination from "@/components/pagination";
+import { Analytics } from "@/components/profile/analytics";
+import Users from "@/components/profile/admin/users";
+import { categoriesData } from "@/const/article/categories";
 
 export default function Profile({ params }: { params: { user: string } }) {
   const [isWonProfile, setIsWonProfile] = useState<boolean>(false);
   const { profile, error, isLoading, revalidate } = useProfile(params.user);
-  const { currentUser, isLoading: userLoading } = useUser();
+  const {
+    currentUser,
+    isLoading: userLoading,
+    revalidate: userRevalidate,
+  } = useUser();
   const [flowFlngDisplay, setFlowFlngDisplay] = useState<number>(5);
   const isAlreadyFollowed = profile?.followers.find(
     (xx) => xx._id === currentUser?._id
@@ -32,15 +66,53 @@ export default function Profile({ params }: { params: { user: string } }) {
   const [isActionLoading, setIsActionLoading] = useState<boolean>(false);
   const [nameChangedAction, setNameChangedAction] = useState<boolean>(false);
   const [updatedName, setUpdatedName] = useState<string>("");
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const [isPassChangeLoading, setIsPassChangeLoading] =
+    useState<boolean>(false);
+  const [currentPasswordError, setCurrentPasswordError] = useState<
+    string | null
+  >(null);
+  const [render, setRender] = useState<
+    "home" | "analytics" | "user" | "payout"
+  >("home");
+  const { data: allArticle, isLoading: allArticleLoading } = useArticle({
+    author: profile?._id,
+  });
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const limit = 3;
+  const totalPages = Math.ceil(
+    Array.isArray(allArticle) ? allArticle.length / limit : 0
+  );
+  const [selectedCategory, setCategory] = useState<string>("");
+  const {
+    data,
+    revalidate: articleRevalidate,
+    isLoading: loading,
+  } = useArticle({
+    author: profile?._id,
+    category: selectedCategory,
+    page: currentPage,
+    limit,
+  });
 
-  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(userPasswordChangeValidationSchema),
+  });
+
+  // const router = useRouter();
 
   async function handleFollowNewPerson(target: IUserResponse) {
     setIsActionLoading(true);
 
     if (!currentUser) {
       setIsActionLoading(false);
-      router.push(`/auth/login?redirect=/profile/${params.user}`);
+      // router.push(`/auth/login?redirect=/profile/${params.user}`);
+      toast.error("You are not Logged in!");
       return;
     }
 
@@ -130,7 +202,127 @@ export default function Profile({ params }: { params: { user: string } }) {
       return;
     }
 
-    console.log(updatedName);
+    if (updatedName.length > 30) {
+      toast.error("Name cannot be more than 30 characters!");
+      setNameChangedAction(false);
+      setUpdatedName("");
+      return;
+    }
+
+    const loading = toast.loading("Working...");
+
+    try {
+      const res = await axiosInstance.patch(`/users?user=${currentUser?._id}`, {
+        name: updatedName,
+      });
+
+      if (res.status == 200) {
+        revalidate();
+        userRevalidate();
+        toast.success("Profile Name Updated", { id: loading });
+        setNameChangedAction(false);
+        setUpdatedName("");
+      }
+    } catch (error) {
+      toast.error("Something Bad Happened", { id: loading });
+      setNameChangedAction(false);
+      setUpdatedName("");
+    }
+  }
+
+  type TFormData = z.infer<typeof userPasswordChangeValidationSchema>;
+  async function handleChangePassword(data: TFormData) {
+    setIsPassChangeLoading(true);
+    const auth = encrypt(currentUser?.email as string);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { newPassword2, ...rest } = data;
+    const payload = { ...rest, auth };
+
+    try {
+      const { data } = await axiosInstance.patch(
+        `/auth/change-password?user=${currentUser?._id}`,
+        payload
+      );
+
+      if (data.success) {
+        setIsPassChangeLoading(false);
+        onClose();
+        reset();
+        toast.success(data.message);
+      } else if (data.message === "Current password is incorrect") {
+        setIsPassChangeLoading(false);
+        reset();
+        setCurrentPasswordError(data.message);
+      } else {
+        setIsPassChangeLoading(false);
+        reset();
+        onClose();
+        toast.error(data.message);
+      }
+    } catch (error) {
+      setIsPassChangeLoading(false);
+      reset();
+      onClose();
+      toast.error("Something Bad Happened!");
+    }
+  }
+
+  async function handleChangeProfilePicture(
+    event: ChangeEvent<HTMLInputElement>
+  ) {
+    const loading = toast.loading("Profile Picture Uploading...");
+
+    if (event.target.files && event.target.files[0]) {
+      try {
+        const imgBbResponse = await uploadImageToImgBb(
+          Array.from(event.target.files)
+        );
+
+        if (imgBbResponse.success) {
+          const serverRes = await axiosInstance.patch(
+            `users?user=${currentUser?._id}`,
+            {
+              profileImg: imgBbResponse.urls![0],
+            }
+          );
+
+          if (serverRes.data.success) {
+            toast.success("Profile Picture Updated!", { id: loading });
+            userRevalidate();
+            revalidate();
+          } else {
+            toast.error("Failed to update profile picture (753)", {
+              id: loading,
+            });
+          }
+        } else {
+          toast.error("Failed to update profile picture (754)", {
+            id: loading,
+          });
+        }
+      } catch (error) {
+        toast.error("Something went wrong", { id: loading });
+      }
+    }
+  }
+
+  async function handleResendEmail() {
+    const loading = toast.loading("Email Sending...");
+
+    try {
+      const emailRes = await sendAccountVerificationEmail({
+        email: currentUser?.email as string,
+      });
+      if (emailRes?.status === 200) {
+        toast.success("Email Send. Plz Check Your Inbox and Spam Folder", {
+          id: loading,
+        });
+      } else {
+        toast.error("Failed To Resend Email. Try Again!", { id: loading });
+      }
+    } catch (error) {
+      toast.error("Something Went Wrong", { id: loading });
+    }
   }
 
   useEffect(() => {
@@ -141,34 +333,134 @@ export default function Profile({ params }: { params: { user: string } }) {
 
   return (
     <>
-      {isLoading && userLoading && <Loading />}
+      {allArticleLoading && userLoading && <Loading />}
       {!isLoading && !!error && (
-        <div className="text-center mt-20">
+        <div className="text-center flex justify-center items-center h-screen w-full -mt-20">
           <p>User Not Found</p>
         </div>
       )}
 
+      <Modal
+        backdrop="blur"
+        isOpen={isOpen}
+        placement="auto"
+        size="lg"
+        onOpenChange={onOpenChange}
+      >
+        <form
+          onSubmit={handleSubmit((data) =>
+            handleChangePassword(data as TFormData)
+          )}
+        >
+          <ModalContent>
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Change Password
+              </ModalHeader>
+              <ModalBody>
+                <Input
+                  label="Current Password"
+                  size="sm"
+                  type="password"
+                  variant="bordered"
+                  {...register("oldPassword")}
+                  errorMessage={currentPasswordError as string}
+                  isInvalid={!!currentPasswordError}
+                  onChange={(e) => {
+                    register("oldPassword").onChange(e);
+                    if (currentPasswordError) {
+                      setCurrentPasswordError(null);
+                    }
+                  }}
+                />
+                <Input
+                  label="New Password"
+                  size="sm"
+                  type="password"
+                  variant="bordered"
+                  {...register("newPassword")}
+                  errorMessage={errors.newPassword?.message as string}
+                  isInvalid={!!errors.newPassword}
+                />
+                <Input
+                  label="Confirm New Password"
+                  size="sm"
+                  type="password"
+                  variant="bordered"
+                  {...register("newPassword2")}
+                  errorMessage={errors.newPassword2?.message as string}
+                  isInvalid={!!errors.newPassword2}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="primary"
+                  isLoading={isPassChangeLoading}
+                  type="submit"
+                  variant="flat"
+                >
+                  Update Now
+                </Button>
+              </ModalFooter>
+            </>
+          </ModalContent>
+        </form>
+      </Modal>
+
       {!error && (
-        <div className="container mx-auto max-w-7xl">
+        <div className="container mx-auto max-w-7xl min-h-screen">
+          {isWonProfile && !currentUser?.isEmailVerified && (
+            <div className="h-16 hidden md:flex w-full bg-gradient-to-r mb-10 rounded-lg from-[#ff00009d] to-[#ff8c00a0] items-center justify-center text-white font-bold text-sm">
+              Action Required: Verify your email to start writing article!{" "}
+              <span
+                className="ml-2 underline hover:cursor-pointer"
+                onClick={handleResendEmail}
+              >
+                Resent Verification Email
+              </span>
+            </div>
+          )}
+
           <main className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column: Profile Info for mobile, Right for large screens */}
             <div className="lg:order-2 lg:col-span-1 order-1">
-              <Avatar
-                alt={profile?.name}
-                className="w-24 h-24 mb-3 mt-4"
-                src={profile?.profileImg}
-              />
+              <div className="relative group">
+                <Avatar
+                  alt={profile?.name}
+                  className="w-24 h-24 mb-3 mt-4"
+                  src={profile?.profileImg}
+                />
+                {isWonProfile && (
+                  <>
+                    <label
+                      className="absolute w-24 inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-100 transition-opacity duration-300 cursor-pointer rounded-full"
+                      htmlFor="profile-picture"
+                    >
+                      {/* <span className="text-white">Change</span> */}
+                      <CiCamera className="mt-10" size={20} />
+                    </label>
+                    <input
+                      accept="image/*"
+                      className="hidden"
+                      id="profile-picture"
+                      type="file"
+                      onChange={handleChangeProfilePicture}
+                    />
+                  </>
+                )}
+              </div>
+
               <div className="flex gap-3 items-center">
                 {nameChangedAction ? (
                   <input
-                    className="border rounded-md py-1 px-2"
+                    className="border border-gray-400 rounded-md py-1 px-2"
                     defaultValue={profile?.name}
                     type="text"
                     onChange={(e) => setUpdatedName(e.target.value)}
                   />
                 ) : (
                   <UserName
-                    isPremium={!profile?.isPremiumMember}
+                    isPremium={profile?.isPremiumMember}
                     name={profile?.name}
                   />
                 )}
@@ -196,8 +488,9 @@ export default function Profile({ params }: { params: { user: string } }) {
                   color="primary"
                   size="sm"
                   variant="flat"
+                  onPress={onOpen}
                 >
-                  Edit profile
+                  Update Password
                 </Button>
               ) : isAlreadyFollowed ? (
                 <Button
@@ -251,13 +544,31 @@ export default function Profile({ params }: { params: { user: string } }) {
                             </div>
                           </div>
 
-                          <Button
-                            isIconOnly
-                            aria-label="More options"
-                            variant="light"
+                          <Tooltip
+                            content={
+                              <div className="px-3 py-1">
+                                <div
+                                  className="text-small cursor-pointer hover:scale-105 transition-all"
+                                  onClick={() => handleUnfollow(following._id)}
+                                >
+                                  Unfollow
+                                </div>
+                                <div className="text-sm hover:scale-105 transition-all">
+                                  <Link href={`/profile/${following.username}`}>
+                                    Visit Profile
+                                  </Link>
+                                </div>
+                              </div>
+                            }
                           >
-                            <MoreHorizontal size={16} />
-                          </Button>
+                            <Button
+                              isIconOnly
+                              aria-label="More options"
+                              variant="light"
+                            >
+                              <MoreHorizontal size={16} />
+                            </Button>
+                          </Tooltip>
                         </div>
                       ))}
                   </div>
@@ -301,6 +612,25 @@ export default function Profile({ params }: { params: { user: string } }) {
                               </p>
                             </div>
                           </div>
+                          <Tooltip
+                            content={
+                              <div className="px-3 py-1">
+                                <div className="text-sm hover:scale-105 transition-all">
+                                  <Link href={`/profile/${follower.username}`}>
+                                    Visit Profile
+                                  </Link>
+                                </div>
+                              </div>
+                            }
+                          >
+                            <Button
+                              isIconOnly
+                              aria-label="More options"
+                              variant="light"
+                            >
+                              <MoreHorizontal size={16} />
+                            </Button>
+                          </Tooltip>
                         </div>
                       ))}
                   </div>
@@ -326,35 +656,150 @@ export default function Profile({ params }: { params: { user: string } }) {
             <div className="lg:order-1 lg:col-span-2 order-2">
               <div className="flex flex-col items-start mb-8">
                 <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">
-                  Sheikh Mohammad Nazmul H.
+                  {profile?.name}
                 </h1>
-                <div className="flex mt-4 space-x-4">
-                  <Link
-                    className="font-medium cursor-pointer"
+                <div className="flex mt-4 space-x-4 flex-wrap">
+                  <p
+                    className={`${render === "home" ? "font-medium underline" : null} cursor-pointer`}
                     color="foreground"
+                    onClick={() => setRender("home")}
                   >
                     Home
-                  </Link>
-                  <p className="cursor-pointer" color="foreground">
-                    Lists
                   </p>
-                  <p className="cursor-pointer" color="foreground ">
-                    About
-                  </p>
+                  {isWonProfile ? (
+                    <>
+                      <p
+                        className="cursor-pointer"
+                        color="foreground"
+                        onClick={() => toast.info("Feature Not Ready Yet!")}
+                      >
+                        Draft
+                      </p>
+                      <p
+                        className={`${render === "analytics" ? "font-medium underline" : null} cursor-pointer`}
+                        color="foreground"
+                        onClick={() => setRender("analytics")}
+                      >
+                        Analytics
+                      </p>
+                      {profile?.role === "admin" && (
+                        <>
+                          <p
+                            className={`${render === "user" ? "font-medium underline" : null} cursor-pointer`}
+                            color="foreground"
+                            onClick={() => setRender("user")}
+                          >
+                            Users
+                          </p>
+
+                          <p
+                            className={`${render === "payout" ? "font-medium underline" : null} cursor-pointer`}
+                            color="foreground"
+                            onClick={() => setRender("payout")}
+                          >
+                            Payout
+                          </p>
+
+                          {/* <p className='cursor-pointer' color="foreground" onClick={() => toast.info('Feature Not Ready Yet!')}>Payment History</p> */}
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <p
+                        className="cursor-pointer"
+                        color="foreground"
+                        onClick={() => toast.info("Feature Not Ready Yet!")}
+                      >
+                        Lists
+                      </p>
+                      <p
+                        className="cursor-pointer"
+                        color="foreground"
+                        onClick={() => toast.info("Feature Not Ready Yet!")}
+                      >
+                        About
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
-              <ArticlePreview
-                author={{
-                  name: "Alex Mathers",
-                  avatar: "/placeholder.svg?height=40&width=40",
-                }}
-                date="2d ago"
-                image="https://plus.unsplash.com/premium_photo-1685086785054-d047cdc0e525?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                readTime={5}
-                snippet="What even is 'focus'? It's a term we throw around a lot, but do we really understand what it means to be focused? In this article, we'll explore the concept of focus and how to achieve it in your daily life."
-                tags={["Productivity", "Self Improvement"]}
-                title="Nine things you gotta stop doing if you want more focus"
-              />
+
+              {/* conditional rendering */}
+
+              {render === "home" ? (
+                Array.isArray(data) && (
+                  <>
+                    <div className="mb-6 flex space-x-2 overflow-x-auto">
+                      <Chip
+                        className="hover:cursor-pointer"
+                        color={!selectedCategory ? "primary" : "default"}
+                        variant="flat"
+                        onClick={() => setCategory("")}
+                      >
+                        Latest
+                      </Chip>
+                      {categoriesData.slice(0, 5).map((category, indx) => (
+                        <Chip
+                          key={indx}
+                          className="hover:cursor-pointer"
+                          color={
+                            selectedCategory === category.key
+                              ? "primary"
+                              : "default"
+                          }
+                          variant="flat"
+                          onClick={() =>
+                            setCategory(
+                              category.key === selectedCategory
+                                ? ""
+                                : category.key
+                            )
+                          }
+                        >
+                          {category.label}
+                        </Chip>
+                      ))}
+                    </div>
+
+                    {loading && (
+                      <div className=" h-screen flex justify-center flex-col items-center -mt-32">
+                        <Spinner size="lg" />
+                      </div>
+                    )}
+
+                    {Array.isArray(data) && !data.length && (
+                      <div className=" h-screen flex justify-center flex-col items-center -mt-32">
+                        <h2 className="text-center">
+                          There are no article to display!
+                        </h2>
+                      </div>
+                    )}
+
+                    {data.map((article, indx) => (
+                      <ArticlePreview
+                        key={indx}
+                        data={article}
+                        fromProfile={true}
+                        revalidate={articleRevalidate}
+                      />
+                    ))}
+
+                    {Array.isArray(allArticle) && allArticle.length > 3 && (
+                      <Pagination
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                      />
+                    )}
+                  </>
+                )
+              ) : render === "analytics" ? (
+                <Analytics />
+              ) : render === "user" ? (
+                <Users />
+              ) : (
+                <div className="">payout</div>
+              )}
             </div>
           </main>
         </div>
