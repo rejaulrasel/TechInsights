@@ -14,8 +14,8 @@ const userSchema = new Schema<TUser>({
     password: { type: String, required: true, select: false },
     isEmailVerified: { type: Boolean, required: true, default: false },
     isPremiumMember: { type: Boolean, required: true, default: false },
-    followers: [{ type: Schema.Types.ObjectId, ref: 'User', unique: true }],
-    following: [{ type: Schema.Types.ObjectId, ref: 'User', unique: true }],
+    followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     isBlocked: { type: Boolean, required: true, default: false },
     lastLogin: { type: Date, required: false },
 }, {

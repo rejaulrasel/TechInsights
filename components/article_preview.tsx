@@ -122,7 +122,7 @@ export const ArticlePreview = ({
         </ModalContent>
       </Modal>
 
-      <Card className="mb-6 px-2 relative overflow-hidden">
+      <Card className="mb-6 px-2 relative overflow-hidden border-2">
         <CardBody
           className={
             data.isPremiumContent && !currentUser?.isPremiumMember
@@ -131,7 +131,7 @@ export const ArticlePreview = ({
           }
         >
           <Link
-            className="flex items-center mb-2 hover:underline"
+            className="flex items-center mb-2 hover:underline text-primary-500"
             href={`/profile/${data.author.username}`}
           >
             <Avatar className="mr-2" size="sm" src={data?.author?.profileImg} />
@@ -141,28 +141,9 @@ export const ArticlePreview = ({
             />
           </Link>
           <Link href={`/articles/${data.author.username}/${data._id}`}>
-            <div className="flex flex-col md:flex-row justify-between">
-              <div className="flex-grow pr-0 md:pr-4">
-                <h2 className="text-xl font-bold mb-2">{data?.title}</h2>
-                <p className="text-default-500 mb-4">{data?.textArea}</p>
-                <div className="flex flex-wrap text-default-400 items-center gap-2 mb-4">
-                  <span className="text-small">
-                    {formatDateReadable(data.createdAt)}
-                  </span>
-                  ·
-                  <span className="text-small ">
-                    {calculateReadTime(data.description)} min read
-                  </span>
-                  ·<span className="text-small ">{data.views} views</span>
-                  {data.topics.map((tag, index) => (
-                    <Chip key={index} size="sm" variant="flat">
-                      {tag}
-                    </Chip>
-                  ))}
-                </div>
-              </div>
+            <div className="flex flex-col  justify-between">
               {data.images && (
-                <div className="w-full md:w-80 h-40 md:h-24 mb-4 md:mb-0">
+                <div className="w-full h-full mb-4 md:mb-2">
                   <Image
                     alt={data.title}
                     className="w-full h-full object-cover rounded"
@@ -172,6 +153,28 @@ export const ArticlePreview = ({
                   />
                 </div>
               )}
+              <div className="flex-grow pr-0 md:pr-4">
+                <h2 className="text-xl text-justify text-primary font-bold mb-2">
+                  {data?.title}
+                </h2>
+                <p className=" mb-4 text-justify">{data?.textArea}</p>
+                <div className="flex flex-wrap text-default-400 items-center gap-2 mb-4">
+                  {data.topics.map((tag, index) => (
+                    <Chip key={index} size="sm" variant="flat">
+                      {tag}
+                    </Chip>
+                  ))}
+                  <br />
+                  <span className="text-small">
+                    {formatDateReadable(data.createdAt)}
+                  </span>
+                  ·
+                  <span className="text-small ">
+                    {calculateReadTime(data.description)} min read
+                  </span>
+                  ·<span className="text-small ">{data.views} views</span>
+                </div>
+              </div>
             </div>
           </Link>
         </CardBody>

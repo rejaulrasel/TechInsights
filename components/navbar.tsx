@@ -36,22 +36,6 @@ import UserName from "./premium_acc_badge";
 export const Navbar = () => {
   const { currentUser, isLoading } = useUser();
 
-  // const searchInput = (
-  //   <Input
-  //     aria-label="Search"
-  //     classNames={{
-  //       inputWrapper: "bg-default-100",
-  //       input: "text-sm",
-  //     }}
-  //     labelPlacement="outside"
-  //     placeholder="Search..."
-  //     startContent={
-  //       <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-  //     }
-  //     type="search"
-  //   />
-  // );
-
   const profileDropdownDesktop = (
     <Dropdown placement="bottom-start">
       <DropdownTrigger>
@@ -123,7 +107,7 @@ export const Navbar = () => {
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             <Logo />
-            <p className="font-bold text-inherit">TechInsights</p>
+            <p className="font-bold text-inherit text-primary">TechInsights</p>
           </NextLink>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
@@ -166,7 +150,7 @@ export const Navbar = () => {
         ) : (
           <Link className="text-default-foreground" href="/auth/login">
             <Button color="default" variant="bordered">
-              Sign In pops
+              Sign In new
             </Button>
           </Link>
         )}

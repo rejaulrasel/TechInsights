@@ -72,7 +72,7 @@ export default function AboutUs() {
       }}
     >
       <motion.div className="text-center mb-12" variants={fadeInRight}>
-        <h1 className="text-5xl font-bold mb-4">EngineersIQ</h1>
+        <h1 className="text-5xl font-bold mb-4">TechInsights</h1>
         <h2 className="text-2xl">Transforming Ideas into Code, Together.</h2>
       </motion.div>
 
@@ -80,7 +80,7 @@ export default function AboutUs() {
         <h2 className="text-3xl font-semibold mb-4">Our Mission</h2>
         <div className="space-y-4">
           <p>
-            At EngineersIQ, we believe in the transformative power of software
+            At TechInsights, we believe in the transformative power of software
             engineering to shape the future. Our mission is to create an
             inclusive, knowledge-rich platform that empowers software engineers
             of all experience levels to thrive in an ever-evolving digital
@@ -93,7 +93,7 @@ export default function AboutUs() {
             peer-to-peer learning, we aim to foster a culture of continuous
             growth, innovation, and collaboration. Whether you&apos;re just
             starting your coding journey or are a seasoned professional looking
-            to stay on top of the latest trends, EngineersIQ is here to provide
+            to stay on top of the latest trends, TechInsights is here to provide
             the guidance, support, and connections you need to succeed.
           </p>
           <p>
@@ -110,7 +110,7 @@ export default function AboutUs() {
       <motion.div className="mb-12" variants={fadeInRight}>
         <h2 className="text-3xl font-semibold mb-4">Our Community</h2>
         <p className="mb-4">
-          EngineersIQ is more than just a platform; it&apos;s a thriving
+          TechInsights is more than just a platform; it&apos;s a thriving
           community of engineers, professionals, and curious learners. Our
           diverse user base contributes to a rich ecosystem of knowledge, where
           everyone has something to learn and something to teach.

@@ -184,10 +184,10 @@ export default function Home() {
                       Latest
                     </Chip>
                   </motion.div>
-                  {categoriesData.slice(0, 5).map((category, indx) => (
+                  {categoriesData.map((category, indx) => (
                     <motion.div key={indx} variants={fadeInUp}>
                       <Chip
-                        className="hover:cursor-pointer"
+                        className="hover:cursor-pointer hover:bg-primary-500 hover:text-white"
                         color={
                           selectedCategory === category.key
                             ? "primary"
@@ -264,7 +264,7 @@ export default function Home() {
 
             <motion.div className="w-full lg:w-1/3" variants={fadeInUp}>
               <div className="sticky top-20">
-                <SidebarSection title="System Picks">
+                <SidebarSection title="Suggested Options">
                   <AnimatePresence>
                     {Array.isArray(allArticles) &&
                       allArticles
@@ -277,12 +277,17 @@ export default function Home() {
                             >
                               <Card className="mb-2">
                                 <CardBody>
-                                  <h4 className="font-semibold">
+                                  <h4 className="font-semibold text-primary">
                                     {article.title}
                                   </h4>
-                                  <p className="text-small text-default-500">
-                                    {article.textArea.slice(0, 40)}
-                                  </p>
+                                  <div className="flex justify-between">
+                                    <p className="text-small text-default-500">
+                                      {article.textArea.slice(0, 40)}
+                                    </p>
+                                    <span className="text-small ">
+                                      {article.views} views
+                                    </span>
+                                  </div>
                                 </CardBody>
                               </Card>
                             </Link>
@@ -290,7 +295,7 @@ export default function Home() {
                         ))}
                   </AnimatePresence>
                 </SidebarSection>
-                <SidebarSection title="Recommended topics">
+                <SidebarSection title="Highlighted topics">
                   <motion.div
                     className="flex flex-wrap gap-2"
                     variants={staggerChildren}
@@ -298,7 +303,6 @@ export default function Home() {
                     <AnimatePresence>
                       {topicsData
                         .slice(0, topicsData.length / 2)
-                        .reverse()
                         .map((topic) => (
                           <motion.div key={topic.key} variants={fadeInUp}>
                             <Chip

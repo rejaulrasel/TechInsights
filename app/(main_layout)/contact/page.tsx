@@ -63,7 +63,7 @@ export default function ContactPage() {
               <div>
                 <h2 className="text-lg font-semibold">Email</h2>
                 <p className="text-primary">
-                  Send us an email at: support@engineersiq.com
+                  Send us an email at: support@techinsights.com
                 </p>
                 <p className="text-sm text-gray-500">
                   We&apos;ll get back to you as soon as possible.
@@ -77,7 +77,7 @@ export default function ContactPage() {
               <MapPinIcon className="h-6 w-6 text-primary" />
               <div>
                 <h2 className="text-lg font-semibold">Visit Us</h2>
-                <p>123 EngineersIQ HQ, San Francisco, CA 94105</p>
+                <p>123 TechInsights HQ, San Francisco, CA 94105</p>
                 <p className="text-sm text-gray-500">
                   Office hours: Mon-Fri, 9 AM - 6 PM
                 </p>

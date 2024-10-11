@@ -136,7 +136,7 @@ export default function New() {
         <form className="space-y-4" onSubmit={handleSubmit(handleSave)}>
           <h1 className="text-3xl">Publish New Article</h1>
           <p>
-            EngineersIQ is more than just a platform; it&apos;s a thriving
+          TechInsights is more than just a platform; it&apos;s a thriving
             community of engineers, professionals, and curious learners. Our
             diverse user base contributes to a rich ecosystem of knowledge,
             where everyone has something to learn and something to teach.
