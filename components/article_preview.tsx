@@ -132,15 +132,15 @@ export const ArticlePreview = ({
         >
           <Link
             className="flex items-center mb-2 hover:underline text-primary-500"
-            href={`/profile/${data.author.username}`}
+            href={`/profile/${data?.author?.username}`}
           >
             <Avatar className="mr-2" size="sm" src={data?.author?.profileImg} />
             <UserName
-              isPremium={data.author.isPremiumMember}
+              isPremium={data?.author?.isPremiumMember}
               name={data?.author?.name}
             />
           </Link>
-          <Link href={`/articles/${data.author.username}/${data._id}`}>
+          <Link href={`/articles/${data?.author?.username}/${data._id}`}>
             <div className="flex flex-col  justify-between">
               {data.images && (
                 <div className="w-full h-full mb-4 md:mb-2">
@@ -166,20 +166,20 @@ export const ArticlePreview = ({
                   ))}
                   <br />
                   <span className="text-small">
-                    {formatDateReadable(data.createdAt)}
+                    {formatDateReadable(data?.createdAt)}
                   </span>
                   ·
                   <span className="text-small ">
-                    {calculateReadTime(data.description)} min read
+                    {calculateReadTime(data?.description)} min read
                   </span>
-                  ·<span className="text-small ">{data.views} views</span>
+                  ·<span className="text-small ">{data?.views} views</span>
                 </div>
               </div>
             </div>
           </Link>
         </CardBody>
 
-        {fromProfile && currentUser?._id === data.author._id && (
+        {fromProfile && currentUser?._id === data?.author?._id && (
           <CardFooter className="">
             <div className="flex gap-4">
               <Chip className="">Edit </Chip>
@@ -204,7 +204,7 @@ export const ArticlePreview = ({
                     ? `/auth/login`
                     : currentUser
                       ? "/pricing"
-                      : `/auth/login?redirect=/profile/${data.author.username}`
+                      : `/auth/login?redirect=/profile/${data?.author?.username}`
                 }
               >
                 {" "}

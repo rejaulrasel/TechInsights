@@ -273,7 +273,7 @@ export default function Home() {
                         ?.map((article) => (
                           <motion.div key={article._id} variants={fadeInUp}>
                             <Link
-                              href={`/articles/${article.author.username}/${article._id}`}
+                              href={`/articles/${article?.author?.username}/${article._id}`}
                             >
                               <Card className="mb-2">
                                 <CardBody>

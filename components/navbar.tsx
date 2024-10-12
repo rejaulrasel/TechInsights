@@ -150,7 +150,7 @@ export const Navbar = () => {
         ) : (
           <Link className="text-default-foreground" href="/auth/login">
             <Button color="default" variant="bordered">
-              Sign In new
+              Sign In
             </Button>
           </Link>
         )}
