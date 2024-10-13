@@ -164,7 +164,9 @@ function Login() {
             >
               <div className="text-center">
                 {customError ? (
-                  <p className="text-sm">Forgot Password?</p>
+                  <Link className="" href="/auth/recovery">
+                    Forgot PassWord
+                  </Link>
                 ) : (
                   <p>
                     Don&apos;t have account ?{" "}
