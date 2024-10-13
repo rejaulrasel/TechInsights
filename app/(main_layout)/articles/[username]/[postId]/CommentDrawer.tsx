@@ -169,7 +169,7 @@ export const CommentDrawer: React.FC<CommentDrawerProps> = ({
           >
             <div className="flex justify-between items-center p-4 border-b">
               <h2 className="text-xl font-semibold">
-                Responses ({comments.length})
+                Responses ({comments?.length})
               </h2>
               <Button isIconOnly variant="light" onPress={onClose}>
                 <X size={24} />
@@ -201,7 +201,8 @@ export const CommentDrawer: React.FC<CommentDrawerProps> = ({
                     const hasClapped = comment.claps.some(
                       (xx: IClap) => xx._id === currentUser?._id
                     );
-                    const hasWonComment = comment.user._id === currentUser?._id;
+                    const hasWonComment =
+                      comment?.user?._id === currentUser?._id;
 
                     return (
                       <motion.div
