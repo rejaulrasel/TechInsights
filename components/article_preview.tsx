@@ -211,7 +211,11 @@ export const ArticlePreview = ({
               >
                 {" "}
                 <Button color="primary" variant="bordered">
-                  {currentUser ? "Browse Premium Plans" : "Login And Read"}
+                  {currentUser ? (
+                    <Link href="/pay">Browse Premium Plans</Link>
+                  ) : (
+                    "Login And Read"
+                  )}
                 </Button>
               </Link>
             </div>
