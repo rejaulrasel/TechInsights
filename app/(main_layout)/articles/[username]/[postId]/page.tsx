@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Bookmark, Heart, LockIcon, MessageCircle, Share } from "lucide-react";
+import { LockIcon } from "lucide-react";
 import { MdOutlineAddReaction } from "react-icons/md";
 import { GoComment } from "react-icons/go";
 import { SlShare } from "react-icons/sl";
