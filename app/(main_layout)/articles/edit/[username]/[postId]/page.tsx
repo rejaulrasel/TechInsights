@@ -6,12 +6,13 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Editor, IAllProps } from "@tinymce/tinymce-react";
 import { Input, Textarea } from "@nextui-org/input";
 import { Button, Checkbox, Select, SelectItem } from "@nextui-org/react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { LockIcon } from "lucide-react";
+import { LockIcon, X } from "lucide-react";
 import Link from "next/link";
 
 import { categoriesData } from "@/const/article/categories";
@@ -19,7 +20,6 @@ import { topicsData } from "@/const/article/topics";
 import uploadImageToImgBb from "@/utils/upload_image_to_imgbb";
 import useUser from "@/hooks/useUser";
 import Loading from "@/components/loading";
-import { useCreateArticle } from "@/hooks/operations/hook_oparetion_create_article";
 import useArticle from "@/hooks/use_articles";
 import { IArticleResponse } from "@/interface/articles.response.interface";
 
@@ -33,19 +33,19 @@ export default function EditArticle({
   params: { postId: string };
 }) {
   const { isLoading, currentUser } = useUser();
+
   const {
     data,
     isLoading: prevLoading,
     error,
   } = useArticle({ _id: params.postId });
+  const router = useRouter();
   const editorRef = useRef<EditorInstance | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [showImagePreview, setShowImagePreview] = useState<string[]>([]);
   const [imagesLoaded, setImageLoaded] = useState(true);
   const { register, handleSubmit, watch } = useForm();
   const [loading, setLoading] = useState(false);
-  const { mutate: handleCreateNewArticleMutation, isSuccess } =
-    useCreateArticle(currentUser?.username as string);
   const shortDes = watch("textArea");
   const [prevData, setPrevData] = useState<IArticleResponse | null>(
     data ? (data as IArticleResponse) : null
@@ -115,6 +115,28 @@ export default function EditArticle({
         images,
         topics,
       };
+      //start
+      fetch(`/api/articles?_id=${prevData?._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload), // Pass the updated data as payload
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            toast.success("Article updated successfully!");
+            router.push(`/profile/${currentUser?.username}`);
+          } else {
+            toast.error("Failed to update the article");
+          }
+        })
+        .catch((error) => {
+          toast.error(error);
+        });
+
+      //end
     }
   };
 
@@ -139,7 +161,40 @@ export default function EditArticle({
         </div>
       )}
 
-      {currentUser && (
+      {error && (
+        <div className="inset-0 flex items-center h-screen -mt-28 justify-center">
+          <div className="text-center">
+            {/* <LockIcon className="w-12 h-12 text-[#1877F2] mb-4 mx-auto" /> */}
+            <X color="error" size={60} />
+            <h1 className="mb-2">Something Bad Happened!</h1>
+            <Button
+              color="primary"
+              variant="bordered"
+              onClick={() => window.location.reload()}
+            >
+              Try again
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {prevData?.author._id !== currentUser?._id && (
+        <div className="inset-0 flex items-center h-screen -mt-28 justify-center">
+          <div className="text-center">
+            <LockIcon className="w-12 h-12 text-[#1877F2] mb-4 mx-auto" />
+            <h1 className="mb-2">Access Denied</h1>
+            <Button
+              color="primary"
+              variant="bordered"
+              onClick={() => window.location.reload()}
+            >
+              Try again
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {currentUser && !error && prevData?.author._id === currentUser?._id && (
         <form className="space-y-4" onSubmit={handleSubmit(handleSave)}>
           <h3 className="text-primary-600">
             Note: If all previous data is not loaded then please go back one
@@ -336,7 +391,7 @@ export default function EditArticle({
 
           <div className="md:flex justify-between">
             <Checkbox
-              defaultSelected={true}
+              defaultSelected={false}
               isDisabled={!currentUser?.isPremiumMember}
               {...register("isPremiumContent")}
             >

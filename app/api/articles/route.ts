@@ -157,10 +157,12 @@ export async function PATCH(request: Request) {
     const { searchParams } = new URL(request.url);
     const postId = searchParams.get('_id');
     const data = await request.json();
+    console.log('before get data');
+    console.log(data)
 
     try {
         await connectMongodb();
-        const result = await Article.findByIdAndUpdate(postId, data);
+        const result = await Article.findByIdAndUpdate(postId, data, { new: true });
 
         if (result) {
             return NextResponse.json({
