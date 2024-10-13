@@ -126,7 +126,7 @@ export default function ContactPage() {
               height="100%"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0977600296347!2d-122.41941708468212!3d37.77492997975892!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c6c8f4459%3A0xb10ed6d9b5050fa5!2sTwitter%20HQ!5e0!3m2!1sen!2sus!4v1652384760244!5m2!1sen!2sus"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117584.38223205683!2d91.0160791727704!3d22.931365742605696!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3754a374d550da4b%3A0x592809bfe4f17081!2sBegumganj%20Upazila!5e0!3m2!1sen!2sbd!4v1728830561291!5m2!1sen!2sbd"
               style={{ border: 0 }}
               title="TechInsights Location"
               width="100%"

@@ -4,7 +4,7 @@ const Footer: React.FC = () => {
       <p>
         {" "}
         &copy; {new Date().getFullYear()}{" "}
-        <span className="text-orange-500">TechInsights</span> Company LTD.. All
+        <span className="text-primary">TechInsights</span> Company LTD.. All
         rights reserved.
       </p>
     </footer>
